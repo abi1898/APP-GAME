@@ -1,0 +1,50 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Registro | APP GAME</title>
+<link rel="stylesheet" href="registro.css">
+<link rel="stylesheet" href="daltonismo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="contenedor">
+<div class="panel">
+<form action="registro.php" method="POST">
+<div class="campo">
+<i class="fa-solid fa-user"></i>
+<input 
+type="text" 
+name="usuario" 
+placeholder="Nombre de usuario"
+autocomplete="off"
+required>
+</div>
+<div class="campo">
+<i class="fa-solid fa-lock"></i>
+<input 
+type="password" 
+name="password" 
+placeholder="Contraseña"
+autocomplete="new-password"
+required>
+</div>
+<button type="submit">
+REGISTRARSE
+</button>
+<button type="button" onclick="entrarInvitado()" class="invitado">
+ENTRAR COMO INVITADO
+</button>
+<p class="cuenta">
+¿Ya tienes cuenta?
+<a href="iniciosecion.html">Inicia sesión</a>
+</p>
+</form>
+</div>
+</div>
+<script src="registro.js"></script>
+<script src="daltonismo.js"></script>
+
+</body>
+</html>

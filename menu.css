@@ -1,0 +1,172 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+
+body{
+    background:url("menu.png");
+    background-size:cover;
+    background-position:center;
+    background-repeat:no-repeat;
+    min-height:100vh;
+}
+
+.contenedor{
+    display:flex;
+    width:100%;
+    min-height:100vh;
+}
+.menu{
+    width:180px;
+    background:linear-gradient(#fffeff,#305a84);
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+    padding-top:20px;
+}
+.icono{
+    width:120px;
+    height:120px;
+    margin:18px 0;
+    background:linear-gradient(#305a84,#ffffff);
+    display:flex;
+    justify-content:center;
+    align-items:center;
+    border-radius:8px;
+    transition:.3s;
+    box-shadow:0 0 15px rgb(43, 60, 117);
+}
+
+.icono:hover{
+    transform:scale(1.05);
+    box-shadow:0 0 20px rgb(40, 88, 125);
+}
+
+.icono img{
+    width:70px;
+    height:70px;
+}
+.principal{
+    flex:1;
+    padding:30px;
+}
+.fotoPerfil{
+    width:180px;
+    height:180px;
+    border-radius:50%;
+    border:8px solid rgb(0, 0, 0);
+    object-fit:cover;
+}
+.nombre{
+    width:350px;
+    text-align:center;
+    background:linear-gradient(#ffffff,#305a84);
+    padding:12px;
+    font-size:28px;
+    font-weight:bold;
+    border-radius:5px;
+    margin:20px auto 10px;
+}
+.datos{
+    width:350px;
+    text-align:center;
+    background:linear-gradient(#ffffff,#305a84);
+    padding:12px;
+    font-size:22px;
+    border-radius:5px;
+    margin:auto;
+}
+.boton{
+    margin-top:40px;
+    margin-right:30px;
+    width:170px;
+    padding:15px;
+    background:linear-gradient(#ffffff,#305a84);
+    border:none;
+    font-size:22px;
+    border-radius:5px;
+    cursor:pointer;
+}
+
+.boton:hover{
+    background:rgb(40, 88, 125);
+}
+@media(max-width:600px){
+
+    .contenedor{
+        flex-direction:column;
+    }
+
+    .menu{
+        width:100%;
+        flex-direction:row;
+        justify-content:center;
+        flex-wrap:wrap;
+        padding:10px;
+    }
+
+    .icono{
+        width:70px;
+        height:70px;
+        margin:8px;
+    }
+
+    .icono img{
+        width:40px;
+        height:40px;
+    }
+
+    .principal{
+        text-align:center;
+        padding:20px;
+    }
+
+    .fotoPerfil{
+        width:130px;
+        height:130px;
+    }
+
+    .nombre{
+        width:90%;
+        font-size:22px;
+    }
+
+    .datos{
+        width:90%;
+        font-size:18px;
+    }
+
+    .boton{
+        width:80%;
+        margin:15px auto;
+        font-size:18px;
+    }
+}
+@media(min-width:601px) and (max-width:1000px){
+
+    .menu{
+        width:150px;
+    }
+
+    .icono{
+        width:100px;
+        height:100px;
+    }
+
+    .icono img{
+        width:60px;
+        height:60px;
+    }
+
+    .fotoPerfil{
+        width:150px;
+        height:150px;
+    }
+
+    .nombre,
+    .datos{
+        width:280px;
+    }
+}

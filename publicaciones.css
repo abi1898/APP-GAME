@@ -1,0 +1,339 @@
+*{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+    font-family:Arial, Helvetica, sans-serif;
+}
+body{
+    display:flex;
+    min-height:100vh;
+    background:url("publicacionesf.png") center/cover fixed;
+    overflow-x:hidden;
+}
+.menu{
+    width:180px;
+    min-height:100vh;
+
+    background:linear-gradient(
+        #623f03,
+        #85601f,
+        #ffffff
+    );
+
+    display:flex;
+    flex-direction:column;
+    align-items:center;
+
+    padding-top:20px;
+
+    box-shadow:5px 0 20px black;
+}
+.menu .boton{
+    width:120px;
+    height:120px;
+
+    margin:18px 0;
+
+    background:linear-gradient(
+        #644b07,
+        #8f661c
+    );
+
+    border-radius:10px;
+
+    display:flex;
+    justify-content:center;
+    align-items:center;
+
+    transition:0.3s;
+}
+.menu .boton img{
+    width:65px;
+    height:65px;
+
+    object-fit:contain;
+}
+.menu .boton:hover{
+    transform:scale(1.05);
+
+    box-shadow:0 0 20px rgb(151,104,9);
+}
+.menu .cerrar{
+    margin-top:auto;
+    margin-bottom:25px;
+}
+.contenido{
+    flex:1;
+
+    overflow-y:auto;
+
+    padding:30px;
+}
+.crearPublicacion{
+    width:85%;
+    max-width:700px;
+
+    margin:auto;
+
+    background:rgba(80,52,0,0.92);
+
+    border-radius:18px;
+
+    padding:25px;
+
+    box-shadow:0 0 20px black;
+}
+
+
+.crearPublicacion h2{
+    color:white;
+    margin-bottom:20px;
+}
+
+textarea{
+    width:100%;
+    height:140px;
+
+    border:0;
+    border-radius:12px;
+
+    padding:15px;
+
+    font-size:18px;
+
+    resize:none;
+
+    margin-bottom:20px;
+}
+
+
+input[type="file"]{
+    color:white;
+
+    margin-bottom:20px;
+}
+.checkLogro{
+    display:flex;
+
+    align-items:center;
+
+    gap:10px;
+
+    margin:15px 0;
+
+    font-size:18px;
+
+    color:white;
+
+    font-weight:bold;
+}
+
+
+.checkLogro input{
+    width:22px;
+    height:22px;
+
+    cursor:pointer;
+}
+.crearPublicacion button{
+    background:linear-gradient(
+        #644b07,
+        #623f03
+    );
+
+    color:white;
+
+    border:0;
+
+    padding:14px 35px;
+
+    border-radius:10px;
+
+    cursor:pointer;
+
+    font-size:18px;
+
+    font-weight:bold;
+}
+
+
+.crearPublicacion button:hover{
+    box-shadow:0 0 15px rgb(86,58,10);
+}
+.listaPublicaciones{
+    width:85%;
+    max-width:700px;
+}
+.publicacion{
+    background:rgba(159,114,46,0.93);
+
+    border-radius:18px;
+
+    padding:20px;
+
+    margin-bottom:25px;
+
+    color:white;
+
+    box-shadow:0 0 20px black;
+}
+.usuarioPublicacion{
+    display:flex;
+
+    align-items:center;
+
+    margin-bottom:15px;
+}
+
+
+.usuarioPublicacion img{
+    width:60px;
+    height:60px;
+
+    border-radius:50%;
+
+    border:3px solid rgb(126,73,19);
+
+    object-fit:cover;
+
+    margin-right:12px;
+}
+
+
+.usuarioPublicacion strong{
+    font-size:20px;
+}
+.tituloLogro{
+    background:#644b07;
+
+    color:white;
+
+    font-weight:bold;
+
+    padding:8px 12px;
+
+    border-radius:8px;
+
+    display:inline-block;
+
+    margin-bottom:10px;
+}
+.publicacion p{
+    margin:15px 0;
+
+    font-size:18px;
+
+    line-height:1.5;
+}
+.imagenPublicacion{
+    width:100%;
+    max-height:320px;
+    object-fit:contain;
+    border-radius:12px;
+    margin-top:10px;
+}
+.publicacion small{
+    display:block;
+
+    margin-top:15px;
+
+    color:#eee;
+}
+.sinPublicaciones{
+    color:white;
+
+    text-align:center;
+
+    font-size:22px;
+
+    margin-top:30px;
+}
+@media(max-width:600px){
+
+    body{
+        flex-direction:column;
+    }
+    .menu{
+        width:100%;
+        min-height:auto;
+
+        flex-direction:row;
+
+        justify-content:center;
+
+        flex-wrap:wrap;
+
+        padding:10px;
+    }
+    .menu .boton{
+        width:70px;
+        height:70px;
+
+        margin:8px;
+    }
+    .menu .boton img{
+        width:40px;
+        height:40px;
+    }
+
+
+    .menu .cerrar{
+        margin:8px;
+    }
+    .contenido{
+        padding:15px;
+    }
+
+
+    .crearPublicacion{
+        width:100%;
+
+        padding:18px;
+    }
+
+
+    .listaPublicaciones{
+        width:100%;
+    }
+
+
+    textarea{
+        height:120px;
+    }
+
+
+    .usuarioPublicacion img{
+        width:55px;
+        height:55px;
+    }
+
+
+    .publicacion{
+        padding:15px;
+    }
+
+
+    .publicacion p{
+        font-size:16px;
+    }
+
+}
+@media(min-width:601px) and (max-width:1000px){
+
+    .menu{
+        width:150px;
+    }
+
+
+    .menu .boton{
+        width:100px;
+        height:100px;
+    }
+
+
+    .menu .boton img{
+        width:55px;
+        height:55px;
+    }
+
+}

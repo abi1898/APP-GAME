@@ -1,0 +1,148 @@
+@import url('https://fonts.googleapis.com/css2?family=Silkscreen:wght@700&display=swap');
+
+*{
+margin:0;
+padding:0;
+box-sizing:border-box;
+font-family:Arial,Helvetica,sans-serif;
+}
+
+body{
+background:#3b210e;
+display:flex;
+justify-content:center;
+align-items:center;
+min-height:100vh;
+padding:20px;
+}
+
+.contenedor{
+width:100%;
+max-width:900px;
+min-height:600px;
+background:url("iniciosesion.jpg") center/cover;
+border-radius:35px;
+overflow:hidden;
+display:flex;
+justify-content:center;
+align-items:center;
+box-shadow:0 0 30px #1c0e05;
+}
+
+.panel{
+width:90%;
+max-width:520px;
+padding:40px;
+background:rgba(70,38,12,.75);
+backdrop-filter:blur(10px);
+border:3px solid #d79a2c;
+border-radius:20px;
+text-align:center;
+box-shadow:0 0 25px #d79a2c;
+}
+
+.logo{
+width:70%;
+max-width:300px;
+margin-bottom:50px;
+}
+
+.campo{
+display:flex;
+align-items:center;
+background:white;
+margin:25px 0;
+border-radius:12px;
+overflow:hidden;
+box-shadow:0 0 15px #8b5a20;
+}
+
+.campo i{
+width:60px;
+height:55px;
+background:#3b210e;
+color:#ffd86b;
+display:flex;
+justify-content:center;
+align-items:center;
+font-size:22px;
+}
+
+.campo input{
+flex:1;
+height:55px;
+border:none;
+outline:none;
+padding-left:15px;
+font-size:18px;
+}
+
+button{
+margin-top:25px;
+width:80%;
+max-width:260px;
+height:55px;
+border:none;
+border-radius:30px;
+background:linear-gradient(#ffd86b,#a66b13);
+color:#2b1607;
+font-family:'Silkscreen',sans-serif;
+font-size:18px;
+font-weight:bold;
+cursor:pointer;
+letter-spacing:2px;
+transition:.3s;
+box-shadow:0 0 15px #d79a2c;
+}
+
+button:hover{
+transform:scale(1.08);
+background:linear-gradient(#ffe9a0,#d79a2c);
+box-shadow:0 0 30px #ffd86b;
+}
+
+@media(max-width:600px){
+body{
+padding:10px;
+}
+
+.contenedor{
+min-height:550px;
+border-radius:25px;
+}
+
+.panel{
+padding:25px;
+width:95%;
+}
+
+.logo{
+margin-bottom:30px;
+}
+
+.campo i{
+width:50px;
+height:50px;
+font-size:18px;
+}
+
+.campo input{
+height:50px;
+font-size:16px;
+}
+
+button{
+height:50px;
+font-size:16px;
+}
+}
+
+@media(min-width:601px) and (max-width:1000px){
+.contenedor{
+width:90%;
+}
+
+.panel{
+width:70%;
+}
+}

@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>APP GAME</title>
+<link rel="stylesheet" href="publicaciones.css">
+<link rel="stylesheet" href="daltonismo.css">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="menu">
+    <a href="perfil.php">
+        <div class="icono">
+            <img src="perfil.png">
+        </div>
+    </a>
+    <a href="logros.html">
+        <div class="icono">
+            <img src="logrosimg.png">
+        </div>
+    </a>
+    <a href="publicaciones.php">
+        <div class="icono">
+            <img src="publicacion.png">
+        </div>
+    </a>
+    <a href="solicitudes.php">
+        <div class="icono">
+            <img src="amigos.png">
+        </div>
+    </a>
+
+    <a href="iniciosecion.html">
+        <div class="icono cerrar">
+            <img src="cerrar.png">
+        </div>
+    </a>
+</div>
+<div class="contenido">
+    <div class="crearPublicacion">
+        <div class="cabecera">
+            <img id="fotoPerfil" src="perfil.png">
+            <div>
+                <h2 id="nombreUsuario">
+                    Usuario
+                </h2>
+                <p>
+                    Comparte con tus amigos
+                </p>
+            </div>
+        </div>
+        <textarea id="texto" placeholder="¿Qué estás pensando?"></textarea>
+       <label class="checkLogro">
+            <input type="checkbox" id="esLogro">
+            🏆 Publicar como logro
+        </label>
+        <div class="botones">
+            <label class="subir">
+                <input
+                type="file"
+                id="imagen"
+                accept="image/*"
+                hidden>
+                <i class="fa-solid fa-image"></i>
+            </label>
+           <button onclick="publicar()">
+                <i class="fa-solid fa-paper-plane"></i>
+            </button>
+        </div>
+    </div>
+   <div id="muro"></div>
+</div>
+<script src="publicaciones.js"></script>
+<script src="daltonismo.js"></script>
+
+</body>
+
+</html>

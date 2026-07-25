@@ -1,0 +1,65 @@
+body.daltonismo{
+    filter:hue-rotate(90deg) saturate(0.8);
+}
+
+body.daltonismo button{
+    background:#333;
+    color:white;
+}
+
+body.daltonismo h1{
+    color:#ffcc00;
+}
+
+body.daltonismo p{
+    color:white;
+}
+.modoDaltonico{
+    display:flex;
+    align-items:center;
+    gap:10px;
+    color:white;
+}
+
+
+.switch{
+    position:relative;
+    width:50px;
+    height:25px;
+}
+
+.switch input{
+    display:none;
+}
+
+.slider{
+    position:absolute;
+    inset:0;
+    background:#555;
+    border-radius:20px;
+    cursor:pointer;
+}
+
+.slider:before{
+    content:"";
+    position:absolute;
+    width:21px;
+    height:21px;
+    left:2px;
+    top:2px;
+    background:white;
+    border-radius:50%;
+    transition:.3s;
+}
+
+input:checked + .slider{
+    background:#35be3b;
+}
+
+input:checked + .slider:before{
+    transform:translateX(25px);
+}
+body.daltonismo .capa{
+    background:rgba(255,0,0,.20);
+    mix-blend-mode:hue;
+}

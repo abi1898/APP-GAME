@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Iniciar Sesión | APP GAME</title>
+<link rel="stylesheet" href="iniciosecion.css">
+<link rel="stylesheet" href="daltonismo.css">
+<link rel="stylesheet"
+href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+</head>
+<body>
+<div class="contenedor">
+<div class="panel">
+<img src="logo.jpg" class="logo">
+<form action="iniciosecion.php" method="POST" autocomplete="off">
+<div class="campo">
+<i class="fa-solid fa-user"></i>
+<input
+type="text"
+name="usuario"
+placeholder="Nombre de usuario"
+autocomplete="off"
+required>
+</div>
+<div class="campo">
+<i class="fa-solid fa-lock"></i>
+<input
+type="password"
+name="password"
+placeholder="Contraseña"
+autocomplete="current-password"
+required>
+</div>
+<button type="submit">
+INICIAR SESIÓN
+</button>
+</form>
+</div>
+</div>
+<script src="iniciosecion.js"></script>
+<script src="daltonismo.js"></script>
+</body>
+</html>
