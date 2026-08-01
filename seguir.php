@@ -1,41 +1,24 @@
 <?php
 
-error_reporting(E_ALL);
-ini_set('display_errors', 1);
-
 session_start();
 
 include("conexion.php");
 
-
 if(!isset($_SESSION["id_usuario"])){
-
     die("No hay usuario iniciado.");
-
 }
-
 
 $idSeguidor = $_SESSION["id_usuario"];
 
-
 if(!isset($_POST["id_usuario"])){
-
-    die("No se recibió el usuario que quieres seguir.");
-
+    die("No se recibió el usuario.");
 }
-
 
 $idSeguido = (int)$_POST["id_usuario"];
 
-
 if($idSeguidor == $idSeguido){
-
     die("No puedes seguirte a ti mismo.");
-
 }
-
-
-/* Comprobar si ya existe */
 
 $sqlComprobar = "SELECT id
                  FROM seguidores
@@ -44,32 +27,31 @@ $sqlComprobar = "SELECT id
 
 $resultado = $conn->query($sqlComprobar);
 
-
 if(!$resultado){
-
     die("Error al comprobar seguimiento: " . $conn->error);
-
 }
 
+if($resultado->num_rows > 0){
 
-/* Si todavía no lo sigue, guardar */
+    $sql = "DELETE FROM seguidores
+            WHERE id_seguidor = '$idSeguidor'
+            AND id_seguido = '$idSeguido'";
 
-if($resultado->num_rows == 0){
+    if(!$conn->query($sql)){
+        die("Error al dejar de seguir: " . $conn->error);
+    }
+
+}else{
 
     $sql = "INSERT INTO seguidores (id_seguidor, id_seguido)
             VALUES ('$idSeguidor', '$idSeguido')";
 
-
     if(!$conn->query($sql)){
-
-        die("Error al guardar seguimiento: " . $conn->error);
-
+        die("Error al seguir: " . $conn->error);
     }
-
 }
 
-
-/* Regresar */
+$conn->close();
 
 header("Location: solicitudes.php");
 exit();

@@ -337,3 +337,18 @@ input[type="file"]{
     }
 
 }
+.botonEliminar{
+    margin-top:10px;
+    padding:8px 18px;
+    border:none;
+    border-radius:8px;
+    background:#c0392b;
+    color:white;
+    font-weight:bold;
+    cursor:pointer;
+}
+
+.botonEliminar:hover{
+    background:#e74c3c;
+    transform:scale(1.05);
+}

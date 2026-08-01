@@ -5,42 +5,85 @@ session_start();
 include("conexion.php");
 
 if(!isset($_SESSION["id_usuario"])){
-
     header("Location: iniciosecion.html");
     exit();
-
 }
 
 $idUsuario = $_SESSION["id_usuario"];
+
 $sqlUsuario = "SELECT usuario, foto
                FROM usuarios
                WHERE id = ?";
 
 $stmtUsuario = $conn->prepare($sqlUsuario);
-
 $stmtUsuario->bind_param("i", $idUsuario);
-
 $stmtUsuario->execute();
 
 $resultadoUsuario = $stmtUsuario->get_result();
-
 $datosUsuario = $resultadoUsuario->fetch_assoc();
-
 
 $usuario = $datosUsuario["usuario"];
 
-
 if(!empty($datosUsuario["foto"])){
-
     $fotoPerfil = $datosUsuario["foto"];
-
 }else{
-
     $fotoPerfil = "fotos/perfil.png";
-
 }
-$sql = "SELECT 
+
+if(isset($_POST["eliminar_publicacion"])){
+
+    $idPublicacion = (int)$_POST["id_publicacion"];
+
+    $sqlImagen = "SELECT imagen
+                  FROM publicaciones
+                  WHERE id = ?
+                  AND id_usuario = ?";
+
+    $stmtImagen = $conn->prepare($sqlImagen);
+    $stmtImagen->bind_param("ii", $idPublicacion, $idUsuario);
+    $stmtImagen->execute();
+
+    $resultadoImagen = $stmtImagen->get_result();
+
+    if($resultadoImagen->num_rows == 1){
+
+        $datosPublicacion = $resultadoImagen->fetch_assoc();
+
+        if(!empty($datosPublicacion["imagen"])){
+
+            $rutaImagen = $datosPublicacion["imagen"];
+
+            if(file_exists($rutaImagen)){
+                unlink($rutaImagen);
+            }
+        }
+
+        $sqlEliminar = "DELETE FROM publicaciones
+                        WHERE id = ?
+                        AND id_usuario = ?";
+
+        $stmtEliminar = $conn->prepare($sqlEliminar);
+
+        $stmtEliminar->bind_param(
+            "ii",
+            $idPublicacion,
+            $idUsuario
+        );
+
+        $stmtEliminar->execute();
+
+        $stmtEliminar->close();
+    }
+
+    $stmtImagen->close();
+
+    header("Location: publicaciones.php");
+    exit();
+}
+
+$sql = "SELECT
             publicaciones.id,
+            publicaciones.id_usuario,
             publicaciones.contenido,
             publicaciones.imagen,
             publicaciones.fecha,
@@ -55,13 +98,11 @@ $sql = "SELECT
 
         ORDER BY publicaciones.id DESC";
 
-
 $resultado = $conn->query($sql);
 
 ?>
 
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
@@ -79,8 +120,8 @@ $resultado = $conn->query($sql);
 
 </head>
 
-
 <body>
+
 <div class="menu">
 
     <a href="perfil.php">
@@ -93,13 +134,20 @@ $resultado = $conn->query($sql);
 
         </div>
 
-  <a href="logros.php">
-    <div class="boton">
-        <img src="logrosimg.png" alt="Logros">
-    </div>
-</a>
+    </a>
+
+    <a href="logros.php">
+
+        <div class="boton">
+
+            <img
+                src="logrosimg.png"
+                alt="Logros">
+
+        </div>
 
     </a>
+
     <a href="publicaciones.php">
 
         <div class="boton">
@@ -111,6 +159,7 @@ $resultado = $conn->query($sql);
         </div>
 
     </a>
+
     <a href="solicitudes.php">
 
         <div class="boton">
@@ -122,6 +171,7 @@ $resultado = $conn->query($sql);
         </div>
 
     </a>
+
     <a href="iniciosecion.html">
 
         <div class="boton cerrar">
@@ -134,20 +184,19 @@ $resultado = $conn->query($sql);
 
     </a>
 
-
 </div>
 
 <div class="contenido">
+
     <div class="crearPublicacion">
 
-
         <h2>Crear publicación</h2>
-
 
         <form
             action="publicar.php"
             method="POST"
             enctype="multipart/form-data">
+
             <textarea
                 name="contenido"
                 placeholder="¿Qué quieres compartir?"
@@ -157,6 +206,7 @@ $resultado = $conn->query($sql);
                 type="file"
                 name="imagen"
                 accept="image/*">
+
             <label class="checkLogro">
 
                 <input
@@ -167,25 +217,23 @@ $resultado = $conn->query($sql);
                 🏆 Publicar también como logro
 
             </label>
+
             <button type="submit">
-
                 Publicar
-
             </button>
-
 
         </form>
 
-
     </div>
-    <div class="listaPublicaciones">
 
+    <div class="listaPublicaciones">
 
 <?php
 
 if($resultado && $resultado->num_rows > 0){
 
     while($publicacion = $resultado->fetch_assoc()){
+
         if(!empty($publicacion["foto"])){
 
             $fotoUsuario = $publicacion["foto"];
@@ -197,17 +245,16 @@ if($resultado && $resultado->num_rows > 0){
         }
 
 ?>
+
         <div class="publicacion">
 
             <div class="usuarioPublicacion">
-
 
                 <img
                     src="<?php
                     echo htmlspecialchars($fotoUsuario);
                     ?>"
                     alt="Foto de perfil">
-
 
                 <strong>
 
@@ -221,25 +268,26 @@ if($resultado && $resultado->num_rows > 0){
 
                 </strong>
 
-
             </div>
-            <?php
+
+<?php
 
             if($publicacion["logro"] == 1){
 
-            ?>
+?>
 
-                <div class="tituloLogro">
+            <div class="tituloLogro">
 
-                    🏆 LOGRO
+                🏆 LOGRO
 
-                </div>
+            </div>
 
-            <?php
+<?php
 
             }
 
-            ?>
+?>
+
             <p>
 
                 <?php
@@ -253,26 +301,27 @@ if($resultado && $resultado->num_rows > 0){
                 ?>
 
             </p>
-            <?php
+
+<?php
 
             if(!empty($publicacion["imagen"])){
 
-            ?>
+?>
 
-                <img
-                    class="imagenPublicacion"
-                    src="<?php
-                    echo htmlspecialchars(
-                        $publicacion["imagen"]
-                    );
-                    ?>"
-                    alt="Imagen de publicación">
+            <img
+                class="imagenPublicacion"
+                src="<?php
+                echo htmlspecialchars(
+                    $publicacion["imagen"]
+                );
+                ?>"
+                alt="Imagen de publicación">
 
-            <?php
+<?php
 
             }
 
-            ?>
+?>
 
             <small>
 
@@ -286,9 +335,39 @@ if($resultado && $resultado->num_rows > 0){
 
             </small>
 
+<?php
+
+            if($publicacion["id_usuario"] == $idUsuario){
+
+?>
+
+            <form
+                method="POST"
+                onsubmit="return confirm('¿Seguro que quieres borrar esta publicación?');">
+
+                <input
+                    type="hidden"
+                    name="id_publicacion"
+                    value="<?php echo $publicacion["id"]; ?>">
+
+                <button
+                    type="submit"
+                    name="eliminar_publicacion"
+                    class="botonEliminar">
+
+                    🗑️ Borrar
+
+                </button>
+
+            </form>
+
+<?php
+
+            }
+
+?>
 
         </div>
-
 
 <?php
 
@@ -298,13 +377,11 @@ if($resultado && $resultado->num_rows > 0){
 
 ?>
 
-
         <p class="sinPublicaciones">
 
             Todavía no hay publicaciones.
 
         </p>
-
 
 <?php
 
@@ -312,24 +389,20 @@ if($resultado && $resultado->num_rows > 0){
 
 ?>
 
-
     </div>
-
 
 </div>
 
-
 <script src="daltonismo.js"></script>
-
 
 </body>
 
 </html>
 
-
 <?php
+
+$stmtUsuario->close();
 
 $conn->close();
 
 ?>
-```

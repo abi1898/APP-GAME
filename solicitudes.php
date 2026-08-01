@@ -5,22 +5,18 @@ session_start();
 include("conexion.php");
 
 if(!isset($_SESSION["id_usuario"])){
-
     header("Location: iniciosecion.html");
     exit();
-
 }
 
 $idUsuario = $_SESSION["id_usuario"];
+
 if(isset($_SESSION["foto"]) && $_SESSION["foto"] != ""){
-
     $fotoPerfil = $_SESSION["foto"];
-
 }else{
-
     $fotoPerfil = "fotos/perfil.png";
-
 }
+
 $sql = "SELECT id, usuario, foto
         FROM usuarios
         WHERE id != '$idUsuario'";
@@ -30,7 +26,6 @@ $resultado = $conn->query($sql);
 ?>
 
 <!DOCTYPE html>
-
 <html lang="es">
 
 <head>
@@ -47,46 +42,43 @@ $resultado = $conn->query($sql);
 
 </head>
 
-
 <body>
+
 <div class="menu">
-  <a href="perfil.php" class="icono">
 
+    <a href="perfil.php">
         <div class="boton">
-
-            <img src="<?php echo htmlspecialchars($fotoPerfil); ?>">
-
+            <img src="<?php echo htmlspecialchars($fotoPerfil); ?>" alt="Perfil">
         </div>
+    </a>
 
     <a href="logros.php">
-    <div class="boton">
-        <img src="logrosimg.png" alt="Logros">
-    </div>
-</a>
-  <a href="publicaciones.php">
-    <a href="solicitudes.php">
-
         <div class="boton">
-
-            <img src="amigos.png">
-
+            <img src="logrosimg.png" alt="Logros">
         </div>
-
     </a>
+
+    <a href="publicaciones.php">
+        <div class="boton">
+            <img src="publicacion.png" alt="Publicaciones">
+        </div>
+    </a>
+
+    <a href="solicitudes.php">
+        <div class="boton">
+            <img src="amigos.png" alt="Seguidores">
+        </div>
+    </a>
+
     <a href="iniciosecion.html">
-
         <div class="boton cerrar">
-
-            <img src="cerrar.png">
-
+            <img src="cerrar.png" alt="Cerrar sesión">
         </div>
-
     </a>
-
 
 </div>
-<div class="contenido">
 
+<div class="contenido">
 
 <?php
 
@@ -95,13 +87,9 @@ if($resultado && $resultado->num_rows > 0){
     while($usuario = $resultado->fetch_assoc()){
 
         if(empty($usuario["foto"])){
-
             $fotoUsuario = "fotos/perfil.png";
-
         }else{
-
             $fotoUsuario = $usuario["foto"];
-
         }
 
         $idUsuarioMostrado = $usuario["id"];
@@ -114,66 +102,51 @@ if($resultado && $resultado->num_rows > 0){
         $yaSigue = $conn->query($comprobar);
 
 ?>
+
     <div class="usuario">
-<img
-    src="<?php echo htmlspecialchars($fotoUsuario); ?>"
-    alt="Foto de <?php echo htmlspecialchars($usuario["usuario"]); ?>"
-    class="fotoUsuario"
->
 
+        <a
+            href="perfil.php?id=<?php echo $usuario["id"]; ?>"
+            class="enlacePerfil"
+        >
 
-        <h2>
+            <img
+                src="<?php echo htmlspecialchars($fotoUsuario); ?>"
+                alt="Foto de <?php echo htmlspecialchars($usuario["usuario"]); ?>"
+                class="fotoUsuario"
+            >
 
-            <?php echo htmlspecialchars($usuario["usuario"]); ?>
+            <h2>
+                <?php echo htmlspecialchars($usuario["usuario"]); ?>
+            </h2>
 
-        </h2>
+        </a>
 
+        <form action="seguir.php" method="POST">
 
-        <?php
+            <input
+                type="hidden"
+                name="id_usuario"
+                value="<?php echo $usuario["id"]; ?>"
+            >
 
-        if($yaSigue && $yaSigue->num_rows > 0){
+            <button type="submit">
 
-        ?>
+                <?php
 
-            <button type="button" disabled>
+                if($yaSigue && $yaSigue->num_rows > 0){
+                    echo "Dejar de seguir";
+                }else{
+                    echo "Seguir";
+                }
 
-                Siguiendo
+                ?>
 
             </button>
 
-
-        <?php
-
-        }else{
-
-        ?>
-
-
-            <form action="seguir.php" method="POST">
-
-                <input
-                    type="hidden"
-                    name="id_usuario"
-                    value="<?php echo $usuario["id"]; ?>"
-                >
-
-
-                <button type="submit">
-
-                    Seguir
-
-                </button>
-
-            </form>
-        <?php
-
-        }
-
-        ?>
-
+        </form>
 
     </div>
-
 
 <?php
 
@@ -200,14 +173,11 @@ if($resultado && $resultado->num_rows > 0){
 
 ?>
 
-
 </div>
-
 
 <script src="solicitudes.js"></script>
 
 <script src="daltonismo.js"></script>
-
 
 </body>
 

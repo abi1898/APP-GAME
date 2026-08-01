@@ -11,12 +11,149 @@ if(!isset($_SESSION["usuario"]) || !isset($_SESSION["id_usuario"])){
 
 }
 
-$usuario = $_SESSION["usuario"];
 $idUsuario = $_SESSION["id_usuario"];
 
-if(isset($_SESSION["foto"]) && $_SESSION["foto"] != ""){
+if($_SERVER["REQUEST_METHOD"] == "POST" && isset($_POST["nuevo_usuario"])){
 
-    $foto = $_SESSION["foto"];
+    $nuevoUsuario = trim($_POST["nuevo_usuario"]);
+
+    if($nuevoUsuario == ""){
+
+        echo "<script>
+        alert('Escribe un nombre de usuario.');
+        window.location='perfil.php';
+        </script>";
+
+        exit();
+
+    }
+
+    if(strlen($nuevoUsuario) < 3){
+
+        echo "<script>
+        alert('El nombre debe tener al menos 3 caracteres.');
+        window.location='perfil.php';
+        </script>";
+
+        exit();
+
+    }
+
+    $sqlExiste = "SELECT id
+                  FROM usuarios
+                  WHERE usuario = ?
+                  AND id != ?";
+
+    $stmtExiste = $conn->prepare($sqlExiste);
+
+    $stmtExiste->bind_param(
+        "si",
+        $nuevoUsuario,
+        $idUsuario
+    );
+
+    $stmtExiste->execute();
+
+    $resultadoExiste = $stmtExiste->get_result();
+
+    if($resultadoExiste->num_rows > 0){
+
+        echo "<script>
+        alert('Ese nombre de usuario ya está ocupado.');
+        window.location='perfil.php';
+        </script>";
+
+        $stmtExiste->close();
+
+        exit();
+
+    }
+
+    $stmtExiste->close();
+
+
+    $sqlCambio = "UPDATE usuarios
+                  SET usuario = ?
+                  WHERE id = ?";
+
+    $stmtCambio = $conn->prepare($sqlCambio);
+
+    $stmtCambio->bind_param(
+        "si",
+        $nuevoUsuario,
+        $idUsuario
+    );
+
+    if($stmtCambio->execute()){
+
+        $_SESSION["usuario"] = $nuevoUsuario;
+
+        echo "<script>
+        alert('Nombre de usuario cambiado correctamente.');
+        window.location='perfil.php';
+        </script>";
+
+        $stmtCambio->close();
+
+        exit();
+
+    }else{
+
+        echo "<script>
+        alert('No se pudo cambiar el nombre.');
+        window.location='perfil.php';
+        </script>";
+
+        $stmtCambio->close();
+
+        exit();
+
+    }
+
+}
+if(isset($_GET["id"])){
+
+    $idPerfil = (int)$_GET["id"];
+
+}else{
+
+    $idPerfil = $idUsuario;
+
+}
+
+
+$sqlPerfil = "SELECT id, usuario, foto
+              FROM usuarios
+              WHERE id = ?";
+
+$stmtPerfil = $conn->prepare($sqlPerfil);
+
+$stmtPerfil->bind_param(
+    "i",
+    $idPerfil
+);
+
+$stmtPerfil->execute();
+
+$resultadoPerfil = $stmtPerfil->get_result();
+
+$datosPerfil = $resultadoPerfil->fetch_assoc();
+
+
+if(!$datosPerfil){
+
+    header("Location: solicitudes.php");
+    exit();
+
+}
+
+
+$usuarioPerfil = $datosPerfil["usuario"];
+
+
+if(!empty($datosPerfil["foto"])){
+
+    $foto = $datosPerfil["foto"];
 
 }else{
 
@@ -24,7 +161,12 @@ if(isset($_SESSION["foto"]) && $_SESSION["foto"] != ""){
 
 }
 
-$seccion = isset($_GET["seccion"]) ? $_GET["seccion"] : "";
+
+$esMiPerfil = ($idPerfil == $idUsuario);
+
+$seccion = isset($_GET["seccion"])
+    ? $_GET["seccion"]
+    : "";
 
 ?>
 
@@ -36,12 +178,15 @@ $seccion = isset($_GET["seccion"]) ? $_GET["seccion"] : "";
 
 <meta charset="UTF-8">
 
-<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="viewport"
+      content="width=device-width, initial-scale=1.0">
 
 <title>Perfil | APP GAME</title>
 
 <link rel="stylesheet" href="menu.css">
+
 <link rel="stylesheet" href="perfil.css">
+
 <link rel="stylesheet" href="daltonismo.css">
 
 </head>
@@ -50,32 +195,62 @@ $seccion = isset($_GET["seccion"]) ? $_GET["seccion"] : "";
 
 <div class="contenedor">
 
+
+    <!-- BARRA LATERAL -->
+
     <div class="menu">
 
         <a href="perfil.php" class="icono">
-            <img src="<?php echo htmlspecialchars($foto); ?>" alt="Perfil">
+
+            <img
+                src="<?php echo htmlspecialchars($_SESSION["foto"] ?? "fotos/perfil.png"); ?>"
+                alt="Perfil">
+
         </a>
+
 
         <a href="logros.php" class="icono">
-            <img src="logrosimg.png" alt="Logros">
+
+            <img
+                src="logrosimg.png"
+                alt="Logros">
+
         </a>
+
 
         <a href="publicaciones.php" class="icono">
-            <img src="publicacion.png" alt="Publicaciones">
+
+            <img
+                src="publicacion.png"
+                alt="Publicaciones">
+
         </a>
+
 
         <a href="solicitudes.php" class="icono">
-            <img src="amigos.png" alt="Usuarios">
+
+            <img
+                src="amigos.png"
+                alt="Usuarios">
+
         </a>
 
+
         <a href="iniciosecion.html" class="icono">
-            <img src="cerrar.png" alt="Cerrar sesión">
+
+            <img
+                src="cerrar.png"
+                alt="Cerrar sesión">
+
         </a>
 
     </div>
 
 
+    <!-- PERFIL -->
+
     <div class="perfil">
+
 
         <img
             src="<?php echo htmlspecialchars($foto); ?>"
@@ -83,10 +258,74 @@ $seccion = isset($_GET["seccion"]) ? $_GET["seccion"] : "";
             class="fotoPerfil"
         >
 
-        <h2>
-            <?php echo htmlspecialchars($usuario); ?>
-        </h2>
 
+        <!-- NOMBRE Y BOTON EDITAR -->
+
+        <div class="nombrePerfil">
+
+            <h2>
+
+                <?php
+
+                echo htmlspecialchars(
+                    $usuarioPerfil
+                );
+
+                ?>
+
+            </h2>
+
+
+            <?php if($esMiPerfil){ ?>
+
+                <button
+                    type="button"
+                    class="editarNombre"
+                    onclick="mostrarCambioNombre()"
+                    title="Cambiar nombre">
+
+                    ✏️
+
+                </button>
+
+            <?php } ?>
+
+        </div>
+
+
+        <!-- FORMULARIO PARA CAMBIAR NOMBRE -->
+
+        <?php if($esMiPerfil){ ?>
+
+        <form
+            method="POST"
+            class="formNombre"
+            id="formNombre"
+        >
+
+            <input
+                type="text"
+                name="nuevo_usuario"
+                placeholder="Nuevo nombre"
+                maxlength="30"
+                required
+            >
+
+            <button
+                type="submit">
+
+                Guardar
+
+            </button>
+
+        </form>
+
+        <?php } ?>
+
+
+        <!-- CAMBIAR FOTO -->
+
+        <?php if($esMiPerfil){ ?>
 
         <form
             action="cambiarfoto.php"
@@ -103,35 +342,73 @@ $seccion = isset($_GET["seccion"]) ? $_GET["seccion"] : "";
                 style="display:none;"
             >
 
-            <label for="foto" class="boton">
+
+            <label
+                for="foto"
+                class="boton">
+
                 Seleccionar foto
+
             </label>
 
-            <button type="submit" class="boton">
+
+            <button
+                type="submit"
+                class="boton">
+
                 Cambiar foto de perfil
+
             </button>
 
         </form>
 
+        <?php } ?>
+
+
+        <!-- SEGUIDORES / SEGUIDOS / PUBLICACIONES -->
 
         <div class="seguimiento">
 
-            <a href="perfil.php?seccion=seguidores">
-                <button type="button" class="boton">
+
+            <a
+                href="perfil.php?id=<?php echo $idPerfil; ?>&seccion=seguidores">
+
+                <button
+                    type="button"
+                    class="boton">
+
                     Seguidores
+
                 </button>
+
             </a>
 
-            <a href="perfil.php?seccion=seguidos">
-                <button type="button" class="boton">
+
+            <a
+                href="perfil.php?id=<?php echo $idPerfil; ?>&seccion=seguidos">
+
+                <button
+                    type="button"
+                    class="boton">
+
                     Seguidos
+
                 </button>
+
             </a>
 
-            <a href="perfil.php?seccion=publicaciones">
-                <button type="button" class="boton">
+
+            <a
+                href="perfil.php?id=<?php echo $idPerfil; ?>&seccion=publicaciones">
+
+                <button
+                    type="button"
+                    class="boton">
+
                     Publicaciones
+
                 </button>
+
             </a>
 
         </div>
@@ -145,21 +422,46 @@ if($seccion == "seguidores"){
 
 ?>
 
-    <h2>Seguidores</h2>
+    <h2>
+
+        Seguidores de
+
+        <?php
+
+        echo htmlspecialchars(
+            $usuarioPerfil
+        );
+
+        ?>
+
+    </h2>
 
 <?php
 
-$sql = "SELECT usuarios.usuario, usuarios.foto
+$sql = "SELECT
+            usuarios.id,
+            usuarios.usuario,
+            usuarios.foto
+
         FROM seguidores
+
         INNER JOIN usuarios
+
         ON seguidores.id_seguidor = usuarios.id
+
         WHERE seguidores.id_seguido = ?";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $idUsuario);
+
+$stmt->bind_param(
+    "i",
+    $idPerfil
+);
+
 $stmt->execute();
 
 $resultado = $stmt->get_result();
+
 
 if($resultado && $resultado->num_rows > 0){
 
@@ -179,15 +481,30 @@ if($resultado && $resultado->num_rows > 0){
 
         <div class="usuario">
 
-            <img
-                src="<?php echo htmlspecialchars($fotoPersona); ?>"
-                class="fotoUsuario"
-                alt="Foto de perfil"
+            <a
+                href="perfil.php?id=<?php echo $persona["id"]; ?>"
+                class="enlacePerfil"
             >
 
-            <h3>
-                <?php echo htmlspecialchars($persona["usuario"]); ?>
-            </h3>
+                <img
+                    src="<?php echo htmlspecialchars($fotoPersona); ?>"
+                    class="fotoUsuario"
+                    alt="Foto de perfil"
+                >
+
+                <h3>
+
+                    <?php
+
+                    echo htmlspecialchars(
+                        $persona["usuario"]
+                    );
+
+                    ?>
+
+                </h3>
+
+            </a>
 
         </div>
 
@@ -197,28 +514,61 @@ if($resultado && $resultado->num_rows > 0){
 
 }else{
 
-    echo "<p>Aún no tienes seguidores.</p>";
+?>
+
+    <p>
+
+        Aún no tiene seguidores.
+
+    </p>
+
+<?php
 
 }
 }elseif($seccion == "seguidos"){
 
 ?>
 
-    <h2>Seguidos</h2>
+    <h2>
+
+        <?php
+
+        echo htmlspecialchars(
+            $usuarioPerfil
+        );
+
+        ?>
+
+        sigue a:
+
+    </h2>
 
 <?php
 
-$sql = "SELECT usuarios.usuario, usuarios.foto
+$sql = "SELECT
+            usuarios.id,
+            usuarios.usuario,
+            usuarios.foto
+
         FROM seguidores
+
         INNER JOIN usuarios
+
         ON seguidores.id_seguido = usuarios.id
+
         WHERE seguidores.id_seguidor = ?";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $idUsuario);
+
+$stmt->bind_param(
+    "i",
+    $idPerfil
+);
+
 $stmt->execute();
 
 $resultado = $stmt->get_result();
+
 
 if($resultado && $resultado->num_rows > 0){
 
@@ -238,15 +588,30 @@ if($resultado && $resultado->num_rows > 0){
 
         <div class="usuario">
 
-            <img
-                src="<?php echo htmlspecialchars($fotoPersona); ?>"
-                class="fotoUsuario"
-                alt="Foto de perfil"
+            <a
+                href="perfil.php?id=<?php echo $persona["id"]; ?>"
+                class="enlacePerfil"
             >
 
-            <h3>
-                <?php echo htmlspecialchars($persona["usuario"]); ?>
-            </h3>
+                <img
+                    src="<?php echo htmlspecialchars($fotoPersona); ?>"
+                    class="fotoUsuario"
+                    alt="Foto de perfil"
+                >
+
+                <h3>
+
+                    <?php
+
+                    echo htmlspecialchars(
+                        $persona["usuario"]
+                    );
+
+                    ?>
+
+                </h3>
+
+            </a>
 
         </div>
 
@@ -256,24 +621,57 @@ if($resultado && $resultado->num_rows > 0){
 
 }else{
 
-    echo "<p>Aún no sigues a ningún usuario.</p>";
+?>
+
+    <p>
+
+        Aún no sigue a ningún usuario.
+
+    </p>
+
+<?php
 
 }
+
 }elseif($seccion == "publicaciones"){
 
 ?>
 
-    <h2>Publicaciones de <?php echo htmlspecialchars($usuario); ?></h2>
+    <h2>
+
+        Publicaciones de
+
+        <?php
+
+        echo htmlspecialchars(
+            $usuarioPerfil
+        );
+
+        ?>
+
+    </h2>
 
 <?php
 
-$sql = "SELECT contenido, imagen, fecha, logro
+$sql = "SELECT
+            contenido,
+            imagen,
+            fecha,
+            logro
+
         FROM publicaciones
+
         WHERE id_usuario = ?
+
         ORDER BY id DESC";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("i", $idUsuario);
+
+$stmt->bind_param(
+    "i",
+    $idPerfil
+);
+
 $stmt->execute();
 
 $resultado = $stmt->get_result();
@@ -287,6 +685,7 @@ if($resultado && $resultado->num_rows > 0){
 
         <div class="publicacionPerfil">
 
+
 <?php
 
         if(!empty($publicacion["contenido"])){
@@ -294,11 +693,17 @@ if($resultado && $resultado->num_rows > 0){
 ?>
 
             <p>
+
                 <?php
+
                 echo nl2br(
-                    htmlspecialchars($publicacion["contenido"])
+                    htmlspecialchars(
+                        $publicacion["contenido"]
+                    )
                 );
+
                 ?>
+
             </p>
 
 <?php
@@ -326,7 +731,9 @@ if($resultado && $resultado->num_rows > 0){
 ?>
 
             <div class="etiquetaLogro">
+
                 🏆 Logro conseguido
+
             </div>
 
 <?php
@@ -336,9 +743,15 @@ if($resultado && $resultado->num_rows > 0){
 ?>
 
             <small>
+
                 <?php
-                echo htmlspecialchars($publicacion["fecha"]);
+
+                echo htmlspecialchars(
+                    $publicacion["fecha"]
+                );
+
                 ?>
+
             </small>
 
         </div>
@@ -352,7 +765,21 @@ if($resultado && $resultado->num_rows > 0){
 ?>
 
     <p class="sinPublicaciones">
-        Todavía no tienes publicaciones.
+
+        <?php
+
+        if($esMiPerfil){
+
+            echo "Todavía no tienes publicaciones.";
+
+        }else{
+
+            echo "Este usuario todavía no tiene publicaciones.";
+
+        }
+
+        ?>
+
     </p>
 
 <?php
@@ -363,10 +790,43 @@ if($resultado && $resultado->num_rows > 0){
 
 ?>
 
-    <h2>Mi perfil</h2>
+    <h2>
+
+<?php
+
+if($esMiPerfil){
+
+    echo "Mi perfil";
+
+}else{
+
+    echo "Perfil de " .
+         htmlspecialchars(
+             $usuarioPerfil
+         );
+
+}
+
+?>
+
+    </h2>
 
     <p>
-        Selecciona Seguidores, Seguidos o Publicaciones.
+
+<?php
+
+if($esMiPerfil){
+
+    echo "Selecciona Seguidores, Seguidos o Publicaciones.";
+
+}else{
+
+    echo "Selecciona una sección para ver el perfil.";
+
+}
+
+?>
+
     </p>
 
 <?php
@@ -381,13 +841,39 @@ if($resultado && $resultado->num_rows > 0){
 
 </div>
 
+
 <script src="daltonismo.js"></script>
+
+
+<script>
+
+function mostrarCambioNombre(){
+
+    const formulario =
+        document.getElementById("formNombre");
+
+    if(formulario.style.display === "flex"){
+
+        formulario.style.display = "none";
+
+    }else{
+
+        formulario.style.display = "flex";
+
+    }
+
+}
+
+</script>
+
 
 </body>
 
 </html>
 
 <?php
+
+$stmtPerfil->close();
 
 $conn->close();
 

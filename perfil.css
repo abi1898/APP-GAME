@@ -210,3 +210,62 @@ text-align:center;
 font-size:18px;
 margin-top:20px;
 }
+.nombrePerfil{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    gap:8px;
+    margin:10px 0;
+}
+
+.nombrePerfil h2{
+    margin:0;
+}
+
+.editarNombre{
+    border:none;
+    background:transparent;
+    font-size:18px;
+    cursor:pointer;
+    padding:3px;
+    opacity:.7;
+    transition:.2s;
+}
+
+.editarNombre:hover{
+    opacity:1;
+    transform:scale(1.1);
+}
+
+.formNombre{
+    display:none;
+    align-items:center;
+    justify-content:center;
+    gap:6px;
+    margin:5px 0 15px;
+}
+
+.formNombre input{
+    width:180px;
+    padding:8px 10px;
+    border:1px solid #ccc;
+    border-radius:6px;
+    outline:none;
+}
+
+.formNombre input:focus{
+    border-color:#9c2ddc;
+}
+
+.formNombre button{
+    padding:8px 12px;
+    border:none;
+    border-radius:6px;
+    background:#9c2ddc;
+    color:white;
+    cursor:pointer;
+}
+
+.formNombre button:hover{
+    background:#833e90;
+}
